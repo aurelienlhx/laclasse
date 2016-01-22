@@ -17,7 +17,7 @@
 	var extend = function(_class){
 		
 		if('function' !== typeof _class)
-			throw 'Type 'function' waited for extend';
+			throw 'Type function expected for extend';
 		
     /**
      * Find a class name
@@ -130,7 +130,7 @@
    */
   function LaClasse(){
       if(baseClassName === this.className)
-        throw baseClassName+' can not be instantiate. Use ''+baseClassName+'.extend()' instead.';
+        throw baseClassName+' can not be instantiate. Use '+baseClassName+'.extend() instead.';
   };
   LaClasse.className = baseClassName;
   LaClasse.constructor = LaClasse;
