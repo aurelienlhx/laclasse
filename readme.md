@@ -3,22 +3,23 @@
 
 ## What is it ?
 
-This a simple class based on the simple javascript inheritance and enriched with a new approach inspired by Php class.
-Create your own class with an easier synthax without care about what is from ```prototype``` and what is not.
-Make available privates , publics and statics variables or methods for each class inheriting from the ```LaClasse``` base class.
+This a simple class based on the simple javascript inheritance and enhanced with a new approach inspired by Php class object model.
+Create your own class with an easier synthax without care about the using of ```prototype```.
+Make available private , public and static variables or methods for each class inheriting from ```LaClasse``` base class.
 
 
 ## How it's work ?
 
 ### Manual installation
 
-Download and extract the latest zip package from this repository and copy the files laclasse.js or laclasse.min.js into your project. Then include the file into yours <head>. 
+Download and extract the latest zip package from this repository and copy the files laclasse.js or laclasse.min.js into your project. Then include the file into your ```<head>```. 
 
 ### Implements it
 
 ```LaClasse``` is an abstract class that can not be instantiated. But it provides an ```extend()``` method that allow you to extend it.
 
 #### Class definition
+
 ```
 LaClasse.extend(function Animal(){});
 var myAnimal = new Animal();
@@ -26,7 +27,7 @@ var myAnimal = new Animal();
 
 Define a function that extends the ```LaClasse``` base class. The function name is the class name and is accessible via a ```className``` property on each instance.
 
-By default, the ```LaClasse``` base class attaches automatically the new class to the window object. To get a class definition into a private scope, use the returned class as below or the first parameter of the script call (see ```LaClasse``` enhancement at the end of this file).
+By default, the ```LaClasse``` base class attaches automatically the new class to the window object. To get a class definition into a private scope, use the returned class of the extend method or the first parameter of the script call (see ```LaClasse``` enhancement at the end of this file).
 
 ```
 var Animal2 = LaClasse.extend(function Animal(){});
@@ -88,7 +89,7 @@ var myAnimal = new Animal();
 myAnimal.eat("salad");
 ```
 
-To pass some parameters class is instanciated, it needs to use the ```this.construct()``` method
+To pass some parameters to the constructor, you need to use the ```this.construct()``` method
 
 ```
 LaClasse.extend(function Animal(){
@@ -112,7 +113,7 @@ myAnimal.eat("salad");
 
 #### Class inheritance
 
-Classes can inherit from each others as the ```extend()``` base class method.
+Classes can inherit from each others using the ```extend()``` base class method.
 Children classes retrieve parent methods and parent properties unless they have been overriden in the child class. In this case, for methods, it is possible to call the parent method with ```this.parent()```
 
 ```
@@ -136,7 +137,7 @@ myDog.stomach //return ["bone"]
 
 #### ```LaClasse``` enhancement
 
-The ```LaClasse``` base class can be enriched by modifying script call parameters.
+The ```LaClasse``` base class can be enhanced by modifying script call parameters.
 ```
 /**
  * end of the script
@@ -147,7 +148,7 @@ The ```LaClasse``` base class can be enriched by modifying script call parameter
 
 1. The first parameter is the scope parameter, it can be changed by any other object. Default is ```window```
 2. The second parameter is the name of the base class. "LaClasse" can be changed to prevent names conflicts.
-3. The third parameter allow to add some others methods that can be found in each ```prototype``` of inherited class.
+3. The third parameter allows to add some others methods that can be found in each ```prototype``` of inherited class.
 
     Use the third ```{}``` object parameter in the script call
   
