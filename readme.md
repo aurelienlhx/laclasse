@@ -8,7 +8,7 @@ Create your own class with an easier synthax without care about the using of ```
 Make available private , public and static variables or methods for each class inheriting from ```LaClasse``` base class.
 
 
-## How it's work ?
+## How it work ?
 
 ### Manual installation
 
