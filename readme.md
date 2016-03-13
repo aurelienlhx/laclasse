@@ -20,7 +20,7 @@ Download and extract the latest zip package from this repository and copy the fi
 
 #### Class definition
 
-```
+```javascript
 LaClasse.extend(function Animal(){});
 var myAnimal = new Animal();
 ```
@@ -29,22 +29,22 @@ Define a function that extends the ```LaClasse``` base class. The function name 
 
 By default, the ```LaClasse``` base class attaches automatically the new class to the window object. To get a class definition into a private scope, use the returned class of the extend method or the first parameter of the script call (see ```LaClasse``` enhancement at the end of this file).
 
-```
-var Animal2 = LaClasse.extend(function Animal(){});
-var myAnimal = new Animal2();
+```javascript
+var Animal = LaClasse.extend(function Animal(){});
+var myAnimal = new Animal();
 ```
 The ```myAnimal.className``` will still be "Animal"
 
 Some methods are already available inherited from the ```LaClasse``` base class.
 
 - ```instanceOf()``` method
-    ```
+    ```javascript
     myAnimal.instanceOf('Animal'); //return true
     myAnimal.instanceOf('Human'); //return false
     ```
 
 - ```clone()``` method
-    ```
+    ```javascript
     var yourAnimal = myAnimal.clone();
     (myAnimal === yourAnimal) //return false
     ```
@@ -58,12 +58,14 @@ All declared properties with ```this.static.property``` is a static variable sha
 
 All declared variables with ```var``` is a private variable specific to an instance.
 
-```
+```javascript
 LaClasse.extend(function Animal(){
+
     this.stomach = []; //public var
     this.static.breed = ['Mammal','Fish']; //public static var
     var has_eaten = false; //private var
 });
+
 var myAnimal = new Animal();
 myAnimal.stomach; // return []
 myAnimal.static.breed; // return ['Mammal','Fish']
@@ -74,13 +76,15 @@ myAnimal.has_eaten; //return undefined
 
 With ```LaClasse```, all methods can be directly declared with ```this.method = function(){}```. Don't care about ```prototype``` cause all methods become a function of ```prototype```.
 
-```
+```javascript
 LaClasse.extend(function Animal(){
+
     this.stomach = []; //public var
     this.static.breed = ['Mammal','Fish']; //public static var
     var has_eaten = false; //private var
-    
+   
     this.eat = function(food){
+
        this.stomach.push(food);
        has_eaten = true;
     }
@@ -91,8 +95,9 @@ myAnimal.eat("salad");
 
 To pass some parameters to the constructor, you need to use the ```this.construct()``` method
 
-```
+```javascript
 LaClasse.extend(function Animal(){
+
     this.surname = null;
     this.stomach = []; //public var
     this.static.breed = ['Mammal','Fish']; //public static var
@@ -116,7 +121,7 @@ myAnimal.eat("salad");
 Classes can inherit from each others using the ```extend()``` base class method.
 Children classes retrieve parent methods and parent properties unless they have been overriden in the child class. In this case, for methods, it is possible to call the parent method with ```this.parent()```
 
-```
+```javascript
 Animal.extend(function Mamal(){
     
     this.construct = function(surname){
@@ -130,6 +135,7 @@ Mamal.extend(function Dog(){
        this.parent(surname);
     }
 });
+
 var myDog = new Dog("Max");
 myDog.eat("bone");
 myDog.stomach //return ["bone"]
@@ -152,21 +158,23 @@ The ```LaClasse``` base class can be enhanced by modifying script call parameter
 
     Use the third ```{}``` object parameter in the script call
   
-    ```
+    ```javascript
     /**
     * end of the script
     */
     })(window,'LaClasse',{
         myMethod:function(){}
     });
+
      myDog.myMethod();
     ``` 
    
     Or the ```LaClasse.baseMethods``` property as an object of functions.
-    ```
+    ```javascript
     LaClasse.baseMethods = {
         myMethod:function(){}
-    }
+    };
+
     myDog.myMethod();
    ```
 
