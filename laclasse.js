@@ -1,24 +1,40 @@
 /* 
  * LaClasse.js for ES 5.1+
  * @author Aurélien Lheureux
- * @see on http://ejohn.org/blog/simple-javascript-inheritance/
+ * @see http://ejohn.org/blog/simple-javascript-inheritance/
+ * @see http://ifandelse.com/its-not-hard-making-your-library-support-amd-and-commonjs/
  * @licence MIT Licensed
  */
-(function(scope,baseClassName,baseMethods){
 
-	'use strict';
+(function (root, factory) {
+  
+  if(typeof define === "function" && define.amd) {
+    define(["conf"], factory);
+  } else if(typeof module === "object" && module.exports) {
+    module.exports = factory(require("conf"));
+  } else {
+    root.myModule = factory(root.conf);
+  }
 
-	var findClassName = function(func){ return func.name || func.toString().match(/function\s*(\w*)\s*\(/)[1] || null }
+}) (typeof window !== "undefined" ? window : this, function(root,conf){
+
+  'use strict';
+  
+  var conf = conf || {};
+  var baseClassName = conf.baseClassName || 'LaClasse';
+  var baseMethods =  conf.baseMethods || {};
+
+  var findClassName = function(func){ return func.name || func.toString().match(/function\s*(\w*)\s*\(/)[1] || null }
   var reg = /\bthis\.parent\b/;
 
-	/**
-	 * Main function to be used with a child class
-	 */
-	var extend = function(_class){
-		
-		if('function' !== typeof _class)
-			throw 'Type function expected for extend';
-		
+  /**
+   * Main function to be used with a child class
+   */
+  var extend = function(_class){
+    
+    if('function' !== typeof _class)
+      throw 'Type function expected for extend';
+    
     /**
      * Find a class name
      */
@@ -122,8 +138,8 @@
     newclass.className = proto.className;
     newclass.extend = this.extend;
     
-		return scope[newclass.className] = newclass;
-	}
+    return root[newclass.className] = newclass;
+  }
 
   /**
    * LaClasse BaseClass
@@ -134,7 +150,9 @@
   };
   LaClasse.className = baseClassName;
   LaClasse.constructor = LaClasse;
-	LaClasse.extend = extend;
-	return scope[baseClassName] = LaClasse;
+  LaClasse.extend = extend;
 
-})( typeof window !== "undefined" ? window : this ,'LaClasse',{});
+  return LaClasse;
+
+});
+
