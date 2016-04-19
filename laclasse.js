@@ -6,14 +6,18 @@
  * @licence MIT Licensed
  */
 
+//UMD approach
 (function (root, factory) {
   
   if(typeof define === "function" && define.amd) {
+    //AMD
     define(["conf"], factory);
   } else if(typeof module === "object" && module.exports) {
+    //CommonsJS
     module.exports = factory(require("conf"));
   } else {
-    root.myModule = factory(root.conf);
+    //Browser globals
+    root.LaClasse = factory(root.conf);
   }
 
 }) (typeof window !== "undefined" ? window : this, function(root,conf){
