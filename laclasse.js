@@ -135,6 +135,6 @@
   LaClasse.className = baseClassName;
   LaClasse.constructor = LaClasse;
 	LaClasse.extend = extend;
-	return window[baseClassName] = LaClasse;
+	return scope[baseClassName] = LaClasse;
 
-})(window,'LaClasse',{});
+})( typeof window !== "undefined" ? window : this ,'LaClasse',{});
