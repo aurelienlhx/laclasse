@@ -1,24 +1,51 @@
 /* 
  * LaClasse.js for ES 5.1+
  * @author Aurélien Lheureux
- * @see on http://ejohn.org/blog/simple-javascript-inheritance/
+ * @see http://ejohn.org/blog/simple-javascript-inheritance/
+ * @see http://ifandelse.com/its-not-hard-making-your-library-support-amd-and-commonjs/
  * @licence MIT Licensed
  */
-(function(scope,baseClassName,baseMethods){
 
-	'use strict';
+//UMD approach
+(function (root, factory) {
+  
+  if(typeof define === "function" && define.amd) {
+    //AMD
+    define(factory);
+  } else if(typeof module === "object" && module.exports) {
+    //CommonsJS
+    module.exports = factory(root);
+  } else {
+    //Browser globals
+    var module = factory(root);
+    root[module.className] = module;
+  }
 
-	var findClassName = function(func){ return func.name || func.toString().match(/function\s*(\w*)\s*\(/)[1] || null }
+}) (typeof window !== "undefined" ? window : this, function(root){
+
+  'use strict';
+  
+  /**
+   * LaClasse BaseClass
+   */
+  function LaClasse(){
+    throw new Error('LaClasse is not a constructor. Use LaClasse.create() instead.');
+  };
+  LaClasse.className = 'LaClasse';
+  LaClasse.constructor = LaClasse;
+  LaClasse.baseMethods = {}
+
+  var findClassName = function(func){ return func.name || func.toString().match(/function\s*(\w*)\s*\(/)[1] || null }
   var reg = /\bthis\.parent\b/;
 
-	/**
-	 * Main function to be used with a child class
-	 */
-	var extend = function(_class){
-		
-		if('function' !== typeof _class)
-			throw 'Type function expected for extend';
-		
+  /**
+   * Main function to be used with a child class
+   */
+  var extend = function(_class){
+    
+    if('function' !== typeof _class)
+      throw new Error('Type function expected for extend');
+    
     /**
      * Find a class name
      */
@@ -33,7 +60,7 @@
      * Build the new prototype
      */
     var proto = _class;
-    var props = new (this.className === baseClassName ? function(){} : this)();
+    var props = new (this.className === LaClasse.className ? function(){} : this)();
     var vars = {};
 
     function traverse(props){
@@ -46,7 +73,7 @@
             || 'function' === typeof props[name])
         {
           proto[name] = proto.__parent__ 
-          && typeof proto.__parent__[name] == 'function' 
+          && 'function' === typeof proto.__parent__[name] 
           && reg.test(props[name].toString())
           ? (function(name, fn){
 
@@ -74,7 +101,7 @@
     traverse(props);
     
     proto.className = function_name;
-    proto.__parent__ = this.className === baseClassName ? null : this.prototype;
+    proto.__parent__ = this.className === LaClasse.className ? null : this.prototype;
 
     //now store the last datas
     traverse(new _class());
@@ -82,10 +109,13 @@
     
     //create a constructor
     var newclass = function(){
-        for(var name in vars) this[name] = vars[name]; 
-        
+        for(var name in vars) 
+        	this[name] = vars[name]; 
+
         if('function' ===  typeof proto.construct)
           proto.construct.apply(this,arguments); 
+
+      	this.fire('created');
     }
    
     
@@ -103,15 +133,59 @@
       for (var attr in this) 
           if (this.hasOwnProperty(attr)) clone[attr] = this[attr];
       clone.__proto__ = this.__proto__;
+
+      this.fire('cloned');
+
       return clone;
     };
 
+    proto.hasProperty = function(prop){
+    	return this.hasOwnProperty(prop);
+    }
+
+    proto.hasStaticProperty = function(prop){
+    	return this.static[prop] !== undefined;
+    }
+
+    proto.hasMethod = function(method){
+    	return this[method] !== undefined && 'function' === typeof this[method];
+    }
+
+    var listeners = [];
+
+    proto.listen = function(type,handler,data){
+    	if('undefined' === typeof listeners[type])
+    		listeners[type] = [];
+    	if('function' === typeof handler){
+    		listeners[type].push({handler:handler,data:data});
+    	}
+    };
+
+    proto.fire = function(type,extra){
+    	var event = {
+    		type:type,
+    		target:this,
+    		timestamp:new Date().getTime(),
+    	}
+    	var extra = ('object' === typeof extra) ? extra : {};
+    	for(var i in extra){
+    		if(undefined === event[i])
+    			event[i] = extra[i];
+    	}
+
+    	if(listeners[event.type] instanceof Array){
+    		var length = listeners[event.type].length;
+    		for(var i=0; i < length; i++){
+    			if('object' === typeof listeners[event.type][i].data)
+    				event.data = listeners[event.type][i].data;
+    			listeners[event.type][i].handler.call(this,event);
+    		}
+    	}
+
+    };
+
     //enriched the proto with new functions and properties from user
-    baseMethods = 'object' === typeof LaClasse.baseMethods
-    ? LaClasse.baseMethods 
-      : 'object' === typeof baseMethods
-      ? baseMethods
-    : {};
+    var baseMethods = 'object' === typeof LaClasse.baseMethods ? LaClasse.baseMethods : {};
     for(var i in baseMethods){
       if(baseMethods.hasOwnProperty(i))
         proto[i] = baseMethods[i];
@@ -120,21 +194,17 @@
     proto.constructor = _class;
     newclass.prototype = proto;    
     newclass.className = proto.className;
-    newclass.extend = this.extend;
+    newclass.extend = extend;
     
-		return scope[newclass.className] = newclass;
-	}
+    if('object' === typeof root)
+    	root[newclass.className] = newclass;
+    
+    return newclass;
+  }
 
-  /**
-   * LaClasse BaseClass
-   */
-  function LaClasse(){
-      if(baseClassName === this.className)
-        throw baseClassName+' can not be instantiate. Use '+baseClassName+'.extend() instead.';
-  };
-  LaClasse.className = baseClassName;
-  LaClasse.constructor = LaClasse;
-	LaClasse.extend = extend;
-	return window[baseClassName] = LaClasse;
+ 
+  LaClasse.create = extend;  
+  return LaClasse;
 
-})(window,'LaClasse',{});
+});
+
