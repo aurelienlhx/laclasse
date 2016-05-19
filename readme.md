@@ -3,7 +3,7 @@
 
 ## What is it ?
 
-This a simple class based on the simple javascript inheritance and enhanced with a new approach inspired by Php class object model.
+This a simple class based on the simple javascript inheritance and enhanced with a new approach inspired by Php class.
 Create your own class with an easier synthax without care about the using of ```prototype```.
 Make available private , public and static variables or methods for each class inheriting from ```LaClasse``` base class.
 
@@ -16,26 +16,26 @@ Download and extract the latest zip package from this repository and copy the fi
 
 ### Implements it
 
-```LaClasse``` is an abstract class that can not be instantiated. But it provides an ```extend()``` method that allow you to extend it.
+```LaClasse``` is an abstract class that can not be instantiated. But it provides a ```create()``` method that allow you to write your own class.
 
 #### Class definition
 
 ```javascript
-LaClasse.extend(function Animal(){});
+LaClasse.create(function Animal(){});
 var myAnimal = new Animal();
 ```
 
-Define a function that extends the ```LaClasse``` base class. The function name is the class name and is accessible via a ```className``` property on each instance.
+Define a function class. The function name is the class name and is accessible via a ```className``` property on each instance.
 
-By default, the ```LaClasse``` base class attaches automatically the new class to the window object. To get a class definition into a private scope, use the returned class of the extend method or the first parameter of the script call (see ```LaClasse``` enhancement at the end of this file).
+```LaClasse``` use UMD approach so you can retrieve the object in the window scope. 
 
 ```javascript
-var Animal = LaClasse.extend(function Animal(){});
+var Animal = LaClasse.create(function Animal(){});
 var myAnimal = new Animal();
 ```
 The ```myAnimal.className``` will still be "Animal"
 
-Some methods are already available inherited from the ```LaClasse``` base class.
+Some methods are already available when you create a class.
 
 - ```instanceOf()``` method
     ```javascript
@@ -49,6 +49,12 @@ Some methods are already available inherited from the ```LaClasse``` base class.
     (myAnimal === yourAnimal) //return false
     ```
 
+@todo 
+ - instance.hasStaticProperty
+ - instance.hasProperty
+ - instance.hasMethod
+ - namespace
+
 
 #### Class variables and properties
 
@@ -59,7 +65,7 @@ All declared properties with ```this.static.property``` is a static variable sha
 All declared variables with ```var``` is a private variable specific to an instance.
 
 ```javascript
-LaClasse.extend(function Animal(){
+LaClasse.create(function Animal(){
 
     this.stomach = []; //public var
     this.static.breed = ['Mammal','Fish']; //public static var
@@ -77,7 +83,7 @@ myAnimal.has_eaten; //return undefined
 With ```LaClasse```, all methods can be directly declared with ```this.method = function(){}```. Don't care about ```prototype``` cause all methods become a function of ```prototype```.
 
 ```javascript
-LaClasse.extend(function Animal(){
+LaClasse.create(function Animal(){
 
     this.stomach = []; //public var
     this.static.breed = ['Mammal','Fish']; //public static var
@@ -96,7 +102,7 @@ myAnimal.eat("salad");
 To pass some parameters to the constructor, you need to use the ```this.construct()``` method
 
 ```javascript
-LaClasse.extend(function Animal(){
+LaClasse.create(function Animal(){
 
     this.surname = null;
     this.stomach = []; //public var
@@ -116,9 +122,18 @@ var myAnimal = new Animal("Max");
 myAnimal.eat("salad");
 ```
 
+#### Event listening
+
+@todo
+ - instance.on
+ - instance.fire
+ - instance.once
+ - instance.off
+
+
 #### Class inheritance
 
-Classes can inherit from each others using the ```extend()``` base class method.
+Classes can inherit from each others using the ```extend()``` method.
 Children classes retrieve parent methods and parent properties unless they have been overriden in the child class. In this case, for methods, it is possible to call the parent method with ```this.parent()```
 
 ```javascript
@@ -143,40 +158,8 @@ myDog.stomach //return ["bone"]
 
 #### ```LaClasse``` enhancement
 
-The ```LaClasse``` base class can be enhanced by modifying script call parameters.
-```
-/**
- * end of the script
- */
- })(window,'LaClasse',{});
-//     1.       2.     3.
-``` 
-
-1. The first parameter is the scope parameter, it can be changed by any other object. Default is ```window```
-2. The second parameter is the name of the base class. "LaClasse" can be changed to prevent names conflicts.
-3. The third parameter allows to add some others methods that can be found in each ```prototype``` of inherited class.
-
-    Use the third ```{}``` object parameter in the script call
-  
-    ```javascript
-    /**
-    * end of the script
-    */
-    })(window,'LaClasse',{
-        myMethod:function(){}
-    });
-
-     myDog.myMethod();
-    ``` 
-   
-    Or the ```LaClasse.baseMethods``` property as an object of functions.
-    ```javascript
-    LaClasse.baseMethods = {
-        myMethod:function(){}
-    };
-
-    myDog.myMethod();
-   ```
+@todo
+ - LaClasse.config
 
 Enjoy ! 
 
