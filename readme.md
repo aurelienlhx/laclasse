@@ -16,12 +16,12 @@ Download and extract the latest zip package from this repository and copy the fi
 
 ### Implements it
 
-```LaClasse``` is an abstract class that can not be instantiated. But it provides a ```create()``` method that allow you to write your own class.
+```LaClasse``` is an abstract class that can not be instantiated. But it provides a ```define()``` method that allow you to write your own class.
 
 #### Class definition
 
 ```javascript
-LaClasse.create(function Animal(){});
+LaClasse.define(function Animal(){});
 var myAnimal = new Animal();
 ```
 
@@ -30,7 +30,7 @@ Define a function class. The function name is the class name and is accessible v
 ```LaClasse``` use UMD approach so you can retrieve the object in the window scope. 
 
 ```javascript
-var Animal = LaClasse.create(function Animal(){});
+var Animal = LaClasse.define(function Animal(){});
 var myAnimal = new Animal();
 ```
 The ```myAnimal.className``` will still be "Animal"
@@ -65,7 +65,7 @@ All declared properties with ```this.static.property``` is a static variable sha
 All declared variables with ```var``` is a private variable specific to an instance.
 
 ```javascript
-LaClasse.create(function Animal(){
+LaClasse.define(function Animal(){
 
     this.stomach = []; //public var
     this.static.breed = ['Mammal','Fish']; //public static var
@@ -83,7 +83,7 @@ myAnimal.has_eaten; //return undefined
 With ```LaClasse```, all methods can be directly declared with ```this.method = function(){}```. Don't care about ```prototype``` cause all methods become a function of ```prototype```.
 
 ```javascript
-LaClasse.create(function Animal(){
+LaClasse.define(function Animal(){
 
     this.stomach = []; //public var
     this.static.breed = ['Mammal','Fish']; //public static var
@@ -102,7 +102,7 @@ myAnimal.eat("salad");
 To pass some parameters to the constructor, you need to use the ```this.construct()``` method
 
 ```javascript
-LaClasse.create(function Animal(){
+LaClasse.define(function Animal(){
 
     this.surname = null;
     this.stomach = []; //public var
