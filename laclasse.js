@@ -61,7 +61,7 @@
    * LaClasse BaseClass
    */
   function LaClasse(){
-    throw new Error('LaClasse is not a constructor. Use LaClasse.create() instead.');
+    throw new Error('LaClasse is not a constructor. Use LaClasse.define() instead.');
   };
 
   LaClasse.className = 'LaClasse';
@@ -161,7 +161,7 @@
       traverse( instance );
     });
 
-    //create a constructor
+    //define a constructor
     var _class = function(){
         
         for(var name in vars) 
@@ -170,7 +170,7 @@
         if('function' ===  typeof proto.construct)
           proto.construct.apply(this,arguments); 
 
-        this.fire('created');
+        this.fire('defined');
     }
    
     
@@ -288,7 +288,7 @@
         _config[i] = params[i];
   }
 
-  LaClasse.create = extend;
+  LaClasse.define = extend;
   LaClasse.config = config;
   return LaClasse;
 
